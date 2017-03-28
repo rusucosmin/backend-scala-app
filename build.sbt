@@ -28,6 +28,7 @@ lazy val versions = new {
   val scalatest      = "3.0.0"
   val guice          = "4.0"
   val twitterServer  = "1.26.0"
+  val json4s         = "3.5.0"
 }
 
 /*
@@ -39,7 +40,11 @@ libraryDependencies ++= Seq(
   // Testing
   "org.scalatest" %% "scalatest" % versions.scalatest % "test",
   // Utility libraries
-  "ch.qos.logback" % "logback-classic" % versions.logback
+  "ch.qos.logback" % "logback-classic" % versions.logback,
+  // JSON
+  "org.json4s" %% "json4s-native"  % versions.json4s,
+  "org.json4s" %% "json4s-jackson" % versions.json4s,
+  "org.json4s" %% "json4s-ext"     % versions.json4s
 )
 
 // database

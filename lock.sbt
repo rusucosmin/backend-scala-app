@@ -91,16 +91,23 @@ dependencyOverrides in ThisBuild ++= Set(
   "io.netty" % "netty-transport" % "4.1.6.Final",
   "javax.inject" % "javax.inject" % "1",
   "javax.servlet" % "servlet-api" % "2.5",
-  "joda-time" % "joda-time" % "2.7",
+  "joda-time" % "joda-time" % "2.9.5",
   "mysql" % "mysql-connector-java" % "6.0.5",
   "net.codingwell" % "scala-guice_2.11" % "4.1.0",
   "org.clapper" % "grizzled-slf4j_2.11" % "1.3.0",
-  "org.joda" % "joda-convert" % "1.2",
+  "org.joda" % "joda-convert" % "1.8.1",
+  "org.json4s" % "json4s-ast_2.11" % "3.5.0",
+  "org.json4s" % "json4s-core_2.11" % "3.5.0",
+  "org.json4s" % "json4s-ext_2.11" % "3.5.0",
+  "org.json4s" % "json4s-jackson_2.11" % "3.5.0",
+  "org.json4s" % "json4s-native_2.11" % "3.5.0",
+  "org.json4s" % "json4s-scalap_2.11" % "3.5.0",
   "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.4",
+  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.6",
   "org.scalamacros" % "resetallattrs_2.11" % "1.0.0",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.21",
   "org.slf4j" % "jul-to-slf4j" % "1.7.21",
   "org.slf4j" % "log4j-over-slf4j" % "1.7.21",
   "org.slf4j" % "slf4j-api" % "1.7.21"
 )
-// LIBRARY_DEPENDENCIES_HASH a4ee86728bf1fd60572388c982d2e16c968f4647
+// LIBRARY_DEPENDENCIES_HASH f07af183e7b5eb04000e625292e614b9f2e123d6

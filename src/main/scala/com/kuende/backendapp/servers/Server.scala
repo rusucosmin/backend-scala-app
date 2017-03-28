@@ -1,6 +1,6 @@
 package com.kuende.backendapp.servers
 
-import com.kuende.backendapp.api.{NotificationAPI, PingAPI}
+import com.kuende.backendapp.api.{NotificationAPI, PingAPI, PubsubAPI}
 import com.kuende.backendapp.api.filters.HasUserFilter
 import com.kuende.backendapp.api.mappers.CaseClassMappingExceptionMapper
 import com.kuende.backendapp.util.MysqlContextProvider
@@ -30,6 +30,7 @@ class Server extends HttpServer {
       .filter[CommonFilters]
       .add[PingAPI]
       .add[HasUserFilter, NotificationAPI]
+      .add[PubsubAPI]
       .exceptionMapper[CaseClassMappingExceptionMapper]
   }
 }
