@@ -20,14 +20,14 @@ test in assembly := {}
 mainClass in Compile := Some("com.kuende.backendapp.Application")
 
 lazy val versions = new {
-  val finatra        = "2.7.0"
-  val finagle        = "6.41.0"
+  val finatra        = "2.8.0"
+  val finagle        = "6.42.0"
+  val twitterServer  = "1.27.0"
   val logback        = "1.1.7"
   val quill          = "1.1.0"
   val mysqlConnector = "6.0.5"
   val scalatest      = "3.0.0"
   val guice          = "4.0"
-  val twitterServer  = "1.26.0"
   val json4s         = "3.5.0"
 }
 
