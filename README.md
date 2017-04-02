@@ -1,4 +1,4 @@
-#Backend Scala Sample
+# Backend Scala Sample
 
 This project serves as the Scala work sample for Backend Engineer position.
 
