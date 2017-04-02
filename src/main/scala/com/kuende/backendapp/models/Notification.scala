@@ -42,4 +42,12 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
 
     db.run(q).map(id => notification.copy(id = id))
   }
+
+  def testTeardown() = {
+    val q = quote {
+      query[Notification].delete
+    }
+
+    db.run(q)
+  }
 }

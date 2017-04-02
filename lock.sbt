@@ -27,7 +27,7 @@ dependencyOverrides in ThisBuild ++= Set(
   "com.twitter" % "finagle-exp_2.11" % "6.42.0",
   "com.twitter" % "finagle-http_2.11" % "6.42.0",
   "com.twitter" % "finagle-mux_2.11" % "6.42.0",
-  "com.twitter" % "finagle-mysql_2.11" % "6.42.0",
+  "com.twitter" % "finagle-mysql_2.11" % "6.41.0",
   "com.twitter" % "finagle-netty4-http_2.11" % "6.42.0",
   "com.twitter" % "finagle-netty4_2.11" % "6.42.0",
   "com.twitter" % "finagle-stats_2.11" % "6.42.0",
@@ -52,10 +52,10 @@ dependencyOverrides in ThisBuild ++= Set(
   "com.twitter" % "util-app_2.11" % "6.41.0",
   "com.twitter" % "util-cache_2.11" % "6.41.0",
   "com.twitter" % "util-codec_2.11" % "6.41.0",
-  "com.twitter" % "util-collection_2.11" % "6.42.0",
-  "com.twitter" % "util-core_2.11" % "6.42.0",
+  "com.twitter" % "util-collection_2.11" % "6.41.0",
+  "com.twitter" % "util-core_2.11" % "6.41.0",
   "com.twitter" % "util-events_2.11" % "6.41.0",
-  "com.twitter" % "util-function_2.11" % "6.42.0",
+  "com.twitter" % "util-function_2.11" % "6.41.0",
   "com.twitter" % "util-hashing_2.11" % "6.41.0",
   "com.twitter" % "util-jvm_2.11" % "6.41.0",
   "com.twitter" % "util-lint_2.11" % "6.41.0",
@@ -111,4 +111,4 @@ dependencyOverrides in ThisBuild ++= Set(
   "org.slf4j" % "log4j-over-slf4j" % "1.7.21",
   "org.slf4j" % "slf4j-api" % "1.7.21"
 )
-// LIBRARY_DEPENDENCIES_HASH fe38bf28b11ff314bb3557b5000b16ba3a66a296
+// LIBRARY_DEPENDENCIES_HASH 309cf4c5ba016ac4fb5dabc74cbd132a4ca84563

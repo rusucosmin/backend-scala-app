@@ -10,7 +10,7 @@ import com.kuende.backendapp.models.{Notification, Notifications}
 import com.twitter.util.Future
 
 @Singleton
-class NotificationService @Inject()(idService: IdService, notifications: Notifications) {
+class NotificationService @Inject()(notifications: Notifications) {
   def filter(profileRefId: UUID): Future[Seq[Notification]] = {
     notifications.getAll(profileRefId)
   }

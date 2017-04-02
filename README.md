@@ -28,6 +28,7 @@ $ docker-compose up
 
 $ # Create and migrate databases
 $ sbt flywayMigrate
+$ mysql -u root -h 192.168.99.100 -p123456 -e "CREATE DATABASE backend_scala_app_test; GRANT ALL PRIVILEGES on backend_scala_app_test.* to 'dev'@'%';"
 $ ./script/migrate_db_test.sh
 
 $ # Start sbt

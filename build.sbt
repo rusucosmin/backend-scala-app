@@ -21,7 +21,7 @@ mainClass in Compile := Some("com.kuende.backendapp.Application")
 
 lazy val versions = new {
   val finatra        = "2.8.0"
-  val finagle        = "6.42.0"
+  val finagle        = "6.41.0"
   val twitterServer  = "1.27.0"
   val logback        = "1.1.7"
   val quill          = "1.1.0"
