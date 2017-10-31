@@ -39,15 +39,16 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
       seen: Boolean): Future[Seq[Notification]] = {
     // select * where notification.createdAt >= since && notification.changedAt <= changedAt
     //    && (seen || notification.seen == false limit perPage
+    println("filter::" + changedAt.getEpochSecond)
     val q = quote {
       query[Notification]
-          .filter(n => n.profileRefId == lift(profileRefId))   // filter notification from current user
-          .filter(n => n.createdAt > lift(since))              // filter only notifications since date
-          .filter(n => n.createdAt < lift(changedAt))          // filter only notifications after date
-          .filter(n => lift(seen) || !n.seen)                  // if seen is set to true, return all
-                                                               // otherwise return only unseen notifs
-          .sortBy(n => n.createdAt)                            // sort by
-          .take(lift(perPage))                                 // limit
+          .filter(n => n.profileRefId == lift(profileRefId))       // filter notification from current user
+          .filter(n => n.createdAt > lift(since))     // filter only notifications since date
+          .filter(n => n.createdAt < lift(changedAt)) // filter only notifications before date
+          .filter(n => lift(seen) || !n.seen)                      // if seen is set to true, return all
+                                                                   // otherwise return only unseen notifs
+          .sortBy(n => n.createdAt)                                // sort by
+          .take(lift(perPage))                                     // limit
     }
 
     run(q)
@@ -58,7 +59,7 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
       query[Notification].insert(lift(notification)).returning(_.id)
     }
 
-    db.run(q).map(id => notification.copy(id = id))
+    run(q).map(id => notification.copy(id = id))
   }
 
   def markAsSeen(notificationId: Long) = {
@@ -68,7 +69,26 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
           .update(_.seen -> lift(true))
     }
 
-    db.run(q)
+    run(q)
+  }
+
+  def updateCreateAt(notificationId: Long, createdAt: Instant) = {
+    val q = quote {
+      query[Notification]
+          .filter(n => n.id == lift(notificationId))
+          .update(_.createdAt -> lift(createdAt))
+    }
+
+    run(q)
+  }
+
+  def getNotification(notificationId: Long): Future[Notification] = {
+    val q = quote {
+      query[Notification]
+          .filter(n => n.id == lift(notificationId))
+    }
+
+    run(q).map(_.head)
   }
 
   def testTeardown(): Future[Long] = {
@@ -76,6 +96,6 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
       query[Notification].delete
     }
 
-    db.run(q)
+    run(q)
   }
 }

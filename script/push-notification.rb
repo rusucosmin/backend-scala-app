@@ -5,7 +5,7 @@ require "base64"
 notification = {
   :message => "Teodor Pripoae commented on your post",
   :avatar => "https://avatars3.githubusercontent.com/u/393437?v=3&s=460",
-  :notifiable_ref_id => "9ebb963e-69fc-4ce3-88ce-4b8863e7a971",
+  :notifiable_ref_id => "e511635-47a1-4b0d-8e16-97053a319099",
   :kind => "post_comment"
 }
 

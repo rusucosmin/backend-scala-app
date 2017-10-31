@@ -1,6 +1,7 @@
 package com.kuende.backendapp.consumers
 
 import com.google.inject.{Inject, Singleton}
+import com.kuende.backendapp.models.Notification
 import com.kuende.backendapp.services.NotificationService
 import com.twitter.util.Future
 import org.json4s._
@@ -19,7 +20,7 @@ object NotificationPublishRequest {
 
 @Singleton
 class NotificationPublishConsumer @Inject()(notificationService: NotificationService) {
-  def perform(message: NotificationPublishRequest): Future[Unit] = {
+  def perform(message: NotificationPublishRequest): Future[Notification] = {
     notificationService.create(message)
   }
 }

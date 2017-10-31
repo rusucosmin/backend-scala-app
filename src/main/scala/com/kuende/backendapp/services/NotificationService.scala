@@ -16,7 +16,7 @@ class NotificationService @Inject()(notifications: Notifications) {
     notifications.filter(profileRefId, perPage, changedAt, since, seen)
   }
 
-  def create(req: NotificationPublishRequest): Future[Unit] = {
+  def create(req: NotificationPublishRequest): Future[Notification] = {
     val notification = Notification(
       id = 0,
       profileRefId = UUID.fromString(req.notifiableRefId),
@@ -28,6 +28,6 @@ class NotificationService @Inject()(notifications: Notifications) {
       updatedAt = Instant.now()
     )
 
-    notifications.create(notification).unit
+    notifications.create(notification)
   }
 }
