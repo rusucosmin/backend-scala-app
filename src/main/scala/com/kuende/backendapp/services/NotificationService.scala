@@ -11,8 +11,9 @@ import com.twitter.util.Future
 
 @Singleton
 class NotificationService @Inject()(notifications: Notifications) {
-  def filter(profileRefId: UUID): Future[Seq[Notification]] = {
-    notifications.getAll(profileRefId)
+  def filter(profileRefId: UUID, perPage: Int, changedAt: Instant, since: Instant,
+      seen: Boolean): Future[Seq[Notification]] = {
+    notifications.filter(profileRefId, perPage, changedAt, since, seen)
   }
 
   def create(req: NotificationPublishRequest): Future[Unit] = {
