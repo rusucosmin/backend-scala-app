@@ -7,6 +7,7 @@ import com.google.inject.{Inject, Singleton}
 import com.kuende.backendapp.consumers.NotificationPublishRequest
 import com.kuende.backendapp.models.enum.NotificationKind
 import com.kuende.backendapp.models.{Notification, Notifications}
+import com.twitter.finatra.http.exceptions.BadRequestException
 import com.twitter.util.Future
 
 @Singleton
@@ -29,5 +30,12 @@ class NotificationService @Inject()(notifications: Notifications) {
     )
 
     notifications.create(notification)
+  }
+
+  def markAsSeen(profileRefId: UUID, notificationId: Long): Future[Unit] = {
+    notifications.getNotification(notificationId, profileRefId).flatMap {
+      case Some(_) => notifications.markAsSeen(notificationId).unit
+      case None => Future.exception(new BadRequestException("Notification not found")).unit
+    }
   }
 }

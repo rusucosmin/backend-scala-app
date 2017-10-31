@@ -7,18 +7,23 @@ import com.kuende.backendapp.api.entities.NotificationEntity
 import com.kuende.backendapp.services.NotificationService
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
-import com.twitter.finatra.request.QueryParam
+import com.twitter.finatra.request.{QueryParam, RouteParam}
 import com.twitter.finatra.validation.{Max, Min}
 import com.kuende.backendapp.api.filters.UserContext._
+import com.twitter.finatra.http.exceptions.BadRequestException
 
 case class GetNotificationsRequest(
-  @QueryParam @Max(1000) @Min(1) per_page: Int = 5,
-  @QueryParam since: Long = 0,
-  @QueryParam changed_at: Long = Instant.now().plusSeconds(10).getEpochSecond,
-  @QueryParam unseen: Boolean = false,
-  request: Request
+    @QueryParam @Max(1000) @Min(1) per_page: Int = 5,
+    @QueryParam since: Long = 0,
+    @QueryParam changed_at: Long = Instant.now().plusSeconds(10).getEpochSecond,
+    @QueryParam unseen: Boolean = false,
+    request: Request
 )
 
+case class MarkNotificationAsSeenRequest(
+    @RouteParam id: Long,
+    request: Request
+)
 
 @Singleton
 class NotificationAPI @Inject()(notificationService: NotificationService) extends Controller {
@@ -43,5 +48,16 @@ class NotificationAPI @Inject()(notificationService: NotificationService) extend
       notifications <- notificationService.filter(profileRefId, perPage, changedAt, since, seen)
       entities = NotificationEntity(notifications)
     } yield entities
+  }
+
+  put("/api/v1/notifications/:id") { request: MarkNotificationAsSeenRequest =>
+    println("put request")
+    val profileRefId = request.request.userId
+    val notificationId = request.id
+    println("profileRefId = " + profileRefId)
+    println("notificationId = " + notificationId)
+    for {
+      notification <- notificationService.markAsSeen(profileRefId, notificationId)
+    } yield ()
   }
 }

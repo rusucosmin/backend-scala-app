@@ -66,7 +66,7 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
     val q = quote {
       query[Notification]
           .filter(n => n.id == lift(notificationId))
-          .update(_.seen -> lift(true))
+          .update(_.seen -> lift(true), _.updatedAt -> lift(Instant.now))
     }
 
     run(q)
@@ -82,13 +82,14 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
     run(q)
   }
 
-  def getNotification(notificationId: Long): Future[Notification] = {
+  def getNotification(notificationId: Long, profileRefId: UUID): Future[Option[Notification]] = {
     val q = quote {
       query[Notification]
+          .filter(n => n.profileRefId == lift(profileRefId))
           .filter(n => n.id == lift(notificationId))
     }
 
-    run(q).map(_.head)
+    run(q).map(_.headOption)
   }
 
   def testTeardown(): Future[Long] = {

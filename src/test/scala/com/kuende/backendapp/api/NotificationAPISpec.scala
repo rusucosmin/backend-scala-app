@@ -181,14 +181,14 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
         headers = authHeaders(profileId),
         suppress = true
       )
+      response.length should equal(0)
     }
 
     it("should update created_at value of notification") {
       val notif = await(addNotifToUser(profileId, "notif", "profile", "post_comment"))
       notifications.updateCreateAt(notif.id, Instant.ofEpochSecond(0))
-      for( n <- notifications.getNotification(notif.id)) {
-        n.createdAt.getEpochSecond should equal(0L)
-      }
+      val opt = await(notifications.getNotification(notif.id, profileId)).map(_.createdAt)
+      opt should equal(Some(Instant.ofEpochSecond(0)))
     }
 
     it("should filter correctly the intervals (since, changed_at)") {
@@ -203,17 +203,17 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
       await(notifications.updateCreateAt(notif3.id, Instant.ofEpochSecond(3)))
       await(notifications.updateCreateAt(notif4.id, Instant.ofEpochSecond(4)))
       for (
-        a <- notifications.getNotification(notif0.id);
-        b <- notifications.getNotification(notif1.id);
-        c <- notifications.getNotification(notif2.id);
-        d <- notifications.getNotification(notif3.id);
-        e <- notifications.getNotification(notif4.id)
+        a <- notifications.getNotification(notif0.id, profileId);
+        b <- notifications.getNotification(notif1.id, profileId);
+        c <- notifications.getNotification(notif2.id, profileId);
+        d <- notifications.getNotification(notif3.id, profileId);
+        e <- notifications.getNotification(notif4.id, profileId)
       ) {
-        a.createdAt should equal(0)
-        b.createdAt should equal(1)
-        c.createdAt should equal(2)
-        d.createdAt should equal(3)
-        e.createdAt should equal(4)
+        a.map(_.createdAt) should equal(0)
+        b.map(_.createdAt) should equal(1)
+        c.map(_.createdAt) should equal(2)
+        d.map(_.createdAt) should equal(3)
+        e.map(_.createdAt) should equal(4)
         // should select 1, 2, 3 and 4
         checkLengthOfRequest("/api/v1/notifications?since=0&changed_at=5", 4)
         checkLengthOfRequest("/api/v1/notifications?since=0&changed_at=4", 3)
@@ -229,6 +229,43 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
         checkLengthOfRequest("/api/v1/notifications?since=4&changed_at=5", 0)
         checkLengthOfRequest("/api/v1/notifications?since=6&changed_at=5", 0)
       }
+    }
+    it("should get notifications by id") {
+      val notif = await(addNotifToUser(profileId, "notif1", "profile1", "post_comment"))
+      val id = await(notifications.getNotification(notif.id, profileId)).map(_.id)
+      id should equal(Some(notif.id))
+    }
+
+    it("should get notification response as seen") {
+      val notif = await(addNotifToUser(profileId, "notif1", "profile1", "post_comment"))
+      var response = server.httpPut(
+        path = "/api/v1/notifications/" + notif.id,
+        putBody = "{}",
+        andExpect = Ok,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
+    }
+
+    it("should throw bad request when notification does not exist") {
+      var response = server.httpPut(
+        path = "/api/v1/notifications/1",
+        putBody = "{}",
+        andExpect = BadRequest,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
+    }
+
+    it("should throw bad request when trying to mark as seen a notification not owned by used") {
+      val notif = await(addNotifToUser(UUID.randomUUID(), "notif", "profile", "post_comment"))
+      val response = server.httpPut(
+        path = "/api/v1/notifications/" + notif.id,
+        putBody = "{}",
+        andExpect = BadRequest,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
     }
   }
 }
