@@ -46,8 +46,12 @@ class NotificationAPI @Inject()(notificationService: NotificationService) extend
     println("seen = " + seen)
     for {
       notifications <- notificationService.filter(profileRefId, perPage, changedAt, since, seen)
+      unseenCount <- notificationService.unseenCount(profileRefId)
       entities = NotificationEntity(notifications)
-    } yield entities
+    } yield response
+        .ok(entities)
+        .header("X-Notifications-Unseen", unseenCount)
+        .response
   }
 
   put("/api/v1/notifications/:id") { request: MarkNotificationAsSeenRequest =>

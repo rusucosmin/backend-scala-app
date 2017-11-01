@@ -267,5 +267,44 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
         suppress = true
       )
     }
+
+    it("should correctly compute unseen notifications count") {
+      val notif1 = await(addNotifToUser(profileId, "notif1", "profile1", "post_comment"))
+      var response = server.httpGet(
+        path = "/api/v1/notifications",
+        andExpect = Ok,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
+      assert(response.headerMap.contains("X-Notifications-Unseen"))
+      response.headerMap.get("X-Notifications-Unseen") should equal(Some("1"))
+      markAllAsSeen(profileId)
+      response = server.httpGet(
+        path = "/api/v1/notifications",
+        andExpect = Ok,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
+      assert(response.headerMap.contains("X-Notifications-Unseen"))
+      response.headerMap.get("X-Notifications-Unseen") should equal(Some("0"))
+
+    }
+
+    it("should add header x-notification-unseen to response") {
+      val response = server.httpGet(
+        path = "/api/v1/notifications",
+        andExpect = Ok,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
+      assert(response.headerMap.contains("X-Notifications-Unseen"))
+      val jsonResponse = server.httpGetJson[List[NotificationEntity]](
+        path = "/api/v1/notifications",
+        andExpect = Ok,
+        headers = authHeaders(profileId),
+        suppress = true
+      )
+      jsonResponse.length should equal(0)
+    }
   }
 }

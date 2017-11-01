@@ -38,4 +38,8 @@ class NotificationService @Inject()(notifications: Notifications) {
       case None => Future.exception(new BadRequestException("Notification not found")).unit
     }
   }
+
+  def unseenCount(profileRefId: UUID): Future[Int] = {
+    notifications.getUnreadNotificationsCount(profileRefId)
+  }
 }
