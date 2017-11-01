@@ -1,6 +1,7 @@
 package com.kuende.backendapp.api
 
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 import com.kuende.backendapp.api.entities.NotificationEntity
@@ -197,11 +198,11 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
       val notif2 = await(addNotifToUser(profileId, "notif2", "profile2", "post_comment"))
       val notif3 = await(addNotifToUser(profileId, "notif3", "profile3", "post_comment"))
       val notif4 = await(addNotifToUser(profileId, "notif4", "profile4", "post_comment"))
-      await(notifications.updateCreateAt(notif0.id, Instant.ofEpochSecond(0)))
-      await(notifications.updateCreateAt(notif1.id, Instant.ofEpochSecond(1)))
-      await(notifications.updateCreateAt(notif2.id, Instant.ofEpochSecond(2)))
-      await(notifications.updateCreateAt(notif3.id, Instant.ofEpochSecond(3)))
-      await(notifications.updateCreateAt(notif4.id, Instant.ofEpochSecond(4)))
+      await(notificationsService.updateCreateAt(notif0.id, Instant.ofEpochSecond(0)))
+      await(notificationsService.updateCreateAt(notif1.id, Instant.ofEpochSecond(1)))
+      await(notificationsService.updateCreateAt(notif2.id, Instant.ofEpochSecond(2)))
+      await(notificationsService.updateCreateAt(notif3.id, Instant.ofEpochSecond(3)))
+      await(notificationsService.updateCreateAt(notif4.id, Instant.ofEpochSecond(4)))
       for (
         a <- notifications.getNotification(notif0.id, profileId);
         b <- notifications.getNotification(notif1.id, profileId);
@@ -305,6 +306,24 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
         suppress = true
       )
       jsonResponse.length should equal(0)
+    }
+
+    it("should remove old unseen notifications") {
+      val notif = await(addNotifToUser(profileId, "notif1", "profile1", "post_comment"))
+      val _8daysAgo = Instant.now().minus(8, ChronoUnit.DAYS)
+      await(notificationsService.updateCreateAt(notif.id, _8daysAgo))
+      await(notificationsService.clearOldNotifications())
+      checkLengthOfRequest("/api/v1/notifications", 0)
+    }
+
+    it("should not remove old seen notifications") {
+      val notif = await(addNotifToUser(profileId, "notif1", "profile1", "post_comment"))
+      val _8daysAgo = Instant.now().minus(8, ChronoUnit.DAYS)
+      await(notificationsService.updateCreateAt(notif.id, _8daysAgo))
+      await(notificationsService.markAsSeen(profileId, notif.id))
+      await(notificationsService.clearOldNotifications())
+      checkLengthOfRequest("/api/v1/notifications", 1)
+
     }
   }
 }

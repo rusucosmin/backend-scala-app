@@ -1,6 +1,7 @@
 package com.kuende.backendapp.models
 
 import java.time.Instant
+import java.time.temporal.{ChronoUnit, TemporalAmount}
 import java.util.UUID
 
 import com.google.inject.{Inject, Singleton}
@@ -100,6 +101,17 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
     }
 
     run(q.size).map(_.intValue())
+  }
+
+  def clearOldNotifications(): Future[Long] = {
+    val _7daysAgo = Instant.now().minus(7, ChronoUnit.DAYS)
+    val q = quote {
+      query[Notification]
+          .filter(n => !n.seen)
+          .filter(n => n.createdAt < lift(_7daysAgo))
+          .delete
+    }
+    run(q)
   }
 
   def testTeardown(): Future[Long] = {
