@@ -92,14 +92,14 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
     run(q).map(_.headOption)
   }
 
-  def getUnreadNotificationsCount(profileRefId: UUID): Future[Int] = {
+  def getUnreadNotificationsCount(profileRefId: UUID): Future[Long] = {
     val q = quote {
       query[Notification]
           .filter(n => n.profileRefId == lift(profileRefId))
           .filter(n => !n.seen)
     }
 
-    run(q.size).map(_.intValue())
+    run(q.size)
   }
 
   def clearOldNotifications(): Future[Long] = {

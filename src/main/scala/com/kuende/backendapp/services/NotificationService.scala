@@ -43,7 +43,7 @@ class NotificationService @Inject()(notifications: Notifications) {
     notifications.updateCreateAt(notificationId, createdAt)
   }
 
-  def unseenCount(profileRefId: UUID): Future[Int] = {
+  def unseenCount(profileRefId: UUID): Future[Long] = {
     notifications.getUnreadNotificationsCount(profileRefId)
   }
 
