@@ -42,11 +42,11 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
     //    && (seen || notification.seen == false limit perPage
     val q = quote {
       query[Notification]
-          .filter(n => n.profileRefId == lift(profileRefId))  // filter notification from current user
-          .filter(n => n.createdAt > lift(since))             // filter only notifications since date
-          .filter(n => n.createdAt < lift(changedAt))         // filter only notifications before date
-          .filter(n => lift(seen) || !n.seen)                 // if seen is set to true, return all
-                                                              // otherwise return only unseen notifs
+          .filter(n => n.profileRefId == lift(profileRefId))  // filter notifs from user
+          .filter(n => n.createdAt > lift(since))             // filter only notifs since date
+          .filter(n => n.createdAt < lift(changedAt))         // filter only notifs before date
+          .filter(n => lift(seen) || !n.seen)                 // if seen is true, return all
+                                                              // else return only unseen notifs
           .sortBy(n => n.createdAt)                           // sort by
           .take(lift(perPage))                                // limit
     }
