@@ -1,7 +1,7 @@
 package com.kuende.backendapp.models
 
 import java.time.Instant
-import java.time.temporal.{ChronoUnit, TemporalAmount}
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 import com.google.inject.{Inject, Singleton}
@@ -40,16 +40,15 @@ class Notifications @Inject()(val db: MysqlContext) extends DateEncoding {
       seen: Boolean): Future[Seq[Notification]] = {
     // select * where notification.createdAt >= since && notification.changedAt <= changedAt
     //    && (seen || notification.seen == false limit perPage
-    println("filter::" + changedAt.getEpochSecond)
     val q = quote {
       query[Notification]
-          .filter(n => n.profileRefId == lift(profileRefId))       // filter notification from current user
-          .filter(n => n.createdAt > lift(since))     // filter only notifications since date
-          .filter(n => n.createdAt < lift(changedAt)) // filter only notifications before date
-          .filter(n => lift(seen) || !n.seen)                      // if seen is set to true, return all
-                                                                   // otherwise return only unseen notifs
-          .sortBy(n => n.createdAt)                                // sort by
-          .take(lift(perPage))                                     // limit
+          .filter(n => n.profileRefId == lift(profileRefId))  // filter notification from current user
+          .filter(n => n.createdAt > lift(since))             // filter only notifications since date
+          .filter(n => n.createdAt < lift(changedAt))         // filter only notifications before date
+          .filter(n => lift(seen) || !n.seen)                 // if seen is set to true, return all
+                                                              // otherwise return only unseen notifs
+          .sortBy(n => n.createdAt)                           // sort by
+          .take(lift(perPage))                                // limit
     }
 
     run(q)

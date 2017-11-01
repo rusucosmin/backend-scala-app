@@ -99,8 +99,6 @@ class NotificationAPISpec extends FunSpec with BeforeAndAfterAll with TestMixin 
     }
 
     def checkLengthOfRequest(_path: String, n: Int): Unit = {
-      println("_path = " + _path)
-      println("n = " + n)
       var response = server.httpGetJson[List[NotificationEntity]](
         path = _path,
         andExpect = Ok,
